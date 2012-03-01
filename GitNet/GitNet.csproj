@@ -54,10 +54,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteArrayStreamConvertExtensions.cs" />
+    <Compile Include="GitBlob.cs" />
+    <Compile Include="GitTag.cs" />
     <Compile Include="GitCommit.cs" />
     <Compile Include="GitObject.cs" />
     <Compile Include="GitObjectId.cs" />
+    <Compile Include="GitRepository.cs" />
+    <Compile Include="GitRepositoryExtensions.cs" />
+    <Compile Include="GitTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VirtualizedGitFolder\IGitFolder.cs" />
+    <Compile Include="VirtualizedGitFolder\GitFolderExtensions.cs" />
+    <Compile Include="VirtualizedGitFolder\WindowsFileSystemGitFolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

@@ -59,6 +59,7 @@
     <Compile Include="ByteArrayStreamConvertExtensionsTests.cs" />
     <Compile Include="GitObjectIdTests.cs" />
     <Compile Include="GitObjectTests.cs" />
+    <Compile Include="GitRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +103,9 @@
     <None Include="TestRepository\objects\5f\dbb5a1bf0989ee6f7e1df88e9cbdea4ecc37cc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TestRepository\objects\64\02a88dd851421f4a6d6e0baf2b7b0ed17e0048">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestRepository\objects\94\3de416f3ca669786f126294ff41411aac25b89">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -120,7 +124,13 @@
     <None Include="TestRepository\objects\ff\4541e190688befe09d308a0d07b8baa6c5d767">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TestRepository\ORIG_HEAD">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestRepository\refs\heads\master">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestRepository\refs\tags\foo-tag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -156,7 +166,6 @@
     <Folder Include="TestRepository\hooks\" />
     <Folder Include="TestRepository\objects\info\" />
     <Folder Include="TestRepository\objects\pack\" />
-    <Folder Include="TestRepository\refs\tags\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

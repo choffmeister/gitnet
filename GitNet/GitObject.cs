@@ -11,7 +11,7 @@ namespace GitNet
         private GitObjectId _id;
         private byte[] _rawContent;
 
-        protected static Encoding Encoding
+        public static Encoding Encoding
         {
             get { return _encoding; }
         }
@@ -32,16 +32,6 @@ namespace GitNet
             _rawContent = rawContent;
         }
 
-        public static GitObject CreateFromRaw(string id, Stream raw)
-        {
-            return CreateFromRaw(new GitObjectId(id), raw);
-        }
-
-        public static GitObject CreateFromRaw(byte[] id, Stream raw)
-        {
-            return CreateFromRaw(new GitObjectId(id), raw);
-        }
-
         public static GitObject CreateFromRaw(GitObjectId id, Stream raw)
         {
             string type = null;
@@ -51,8 +41,14 @@ namespace GitNet
             {
                 case "commit":
                     return new GitCommit(id, rawContent);
+                case "tree":
+                    return new GitTree(id, rawContent);
+                case "tag":
+                    return new GitTag(id, rawContent);
+                case "blob":
+                    return new GitBlob(id, rawContent);
                 default:
-                    throw new NotImplementedException(string.Format("Object type '{0}' handling not yet implemented", type));
+                    throw new NotSupportedException(string.Format("Object type '{0}' handling not supported", type));
             }
         }
 
