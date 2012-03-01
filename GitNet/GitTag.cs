@@ -5,6 +5,7 @@
         public GitTag(GitObjectId id, byte[] rawContent)
             : base(id, rawContent)
         {
+            // TODO: implement
         }
     }
 }

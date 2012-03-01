@@ -21,11 +21,6 @@ namespace GitNet
             get { return _id; }
         }
 
-        protected byte[] RawContent
-        {
-            get { return _rawContent; }
-        }
-
         internal GitObject(GitObjectId id, byte[] rawContent)
         {
             _id = id;

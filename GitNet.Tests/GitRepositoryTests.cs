@@ -1,4 +1,5 @@
-﻿using GitNet.VirtualizedGitFolder;
+﻿using System.IO;
+using GitNet.VirtualizedGitFolder;
 using NUnit.Framework;
 
 namespace GitNet.Tests

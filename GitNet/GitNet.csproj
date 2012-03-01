@@ -14,6 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\GitNet\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteArrayStreamConvertExtensions.cs" />
+    <Compile Include="GitAuthor.cs" />
     <Compile Include="GitBlob.cs" />
     <Compile Include="GitTag.cs" />
     <Compile Include="GitCommit.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="GitRepository.cs" />
     <Compile Include="GitRepositoryExtensions.cs" />
     <Compile Include="GitTree.cs" />
+    <Compile Include="GitTreeEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VirtualizedGitFolder\IGitFolder.cs" />
     <Compile Include="VirtualizedGitFolder\GitFolderExtensions.cs" />
