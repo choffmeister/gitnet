@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteArrayStreamConvertExtensions.cs" />
+    <Compile Include="GitCommit.cs" />
+    <Compile Include="GitObject.cs" />
     <Compile Include="GitObjectId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

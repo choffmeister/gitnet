@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="ByteArrayStreamConvertExtensionsTests.cs" />
     <Compile Include="GitObjectIdTests.cs" />
+    <Compile Include="GitObjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
