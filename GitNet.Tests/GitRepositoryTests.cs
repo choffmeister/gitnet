@@ -30,5 +30,26 @@ namespace GitNet.Tests
             GitObject tag = repo.Lookup("6402a88dd851421f4a6d6e0baf2b7b0ed17e0048");
             Assert.IsInstanceOf(typeof(GitTag), tag);
         }
+
+        [Test]
+        public void LookupAll()
+        {
+            IGitFolder folder = new WindowsFileSystemGitFolder("TestRepository");
+            GitRepository repo = new GitRepository(folder);
+
+            int count = 0;
+
+            foreach (var objFolder in folder.ListSubdirectories("objects"))
+            {
+                foreach (var objFile in folder.ListFiles(objFolder))
+                {
+                    GitObject obj = repo.Lookup(objFile.Substring(8, 2) + objFile.Substring(11));
+
+                    count++;
+                }
+            }
+
+            Assert.AreEqual(12, count);
+        }
     }
 }
