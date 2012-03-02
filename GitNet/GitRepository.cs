@@ -24,10 +24,10 @@ namespace GitNet
             _objectCache = new Dictionary<GitObjectId, GitObject>();
             _referenceCache = new Dictionary<string, GitObjectId>();
 
-            _head = new Lazy<GitCommit>(() => this.Lookup<GitCommit>(this.ResolveReference("ref: HEAD")), true);
+            _head = new Lazy<GitCommit>(() => this.RetrieveObject<GitCommit>(this.ResolveReference("ref: HEAD")), true);
         }
 
-        public GitObject Lookup(GitObjectId id)
+        public GitObject RetrieveObject(GitObjectId id)
         {
             if (_objectCache.ContainsKey(id))
             {

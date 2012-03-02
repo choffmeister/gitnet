@@ -23,23 +23,23 @@ namespace GitNet.Tests
         }
 
         [Test]
-        public void Lookup()
+        public void RetrieveObject()
         {
-            GitObject commit = _repo.Lookup("3ea91f0a360b8288b46d064e5cd4296a26020cfd");
+            GitObject commit = _repo.RetrieveObject("3ea91f0a360b8288b46d064e5cd4296a26020cfd");
             Assert.IsInstanceOf(typeof(GitCommit), commit);
 
-            GitObject tree = _repo.Lookup("2f22b42434938c3dc11695064ecf0c04add85711");
+            GitObject tree = _repo.RetrieveObject("2f22b42434938c3dc11695064ecf0c04add85711");
             Assert.IsInstanceOf(typeof(GitTree), tree);
 
-            GitObject blob = _repo.Lookup("01e79c32a8c99c557f0757da7cb6d65b3414466d");
+            GitObject blob = _repo.RetrieveObject("01e79c32a8c99c557f0757da7cb6d65b3414466d");
             Assert.IsInstanceOf(typeof(GitBlob), blob);
 
-            GitObject tag = _repo.Lookup("6402a88dd851421f4a6d6e0baf2b7b0ed17e0048");
+            GitObject tag = _repo.RetrieveObject("6402a88dd851421f4a6d6e0baf2b7b0ed17e0048");
             Assert.IsInstanceOf(typeof(GitTag), tag);
         }
 
         [Test]
-        public void LookupAll()
+        public void RetrieveAllObjects()
         {
             int count = 0;
 
@@ -47,7 +47,7 @@ namespace GitNet.Tests
             {
                 foreach (var objFile in _folder.ListFiles(objFolder))
                 {
-                    GitObject obj = _repo.Lookup(objFile.Substring(8, 2) + objFile.Substring(11));
+                    GitObject obj = _repo.RetrieveObject(objFile.Substring(8, 2) + objFile.Substring(11));
 
                     count++;
                 }

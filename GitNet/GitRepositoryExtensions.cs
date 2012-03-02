@@ -2,32 +2,32 @@
 {
     public static class GitRepositoryExtensions
     {
-        public static GitObject Lookup(this GitRepository repository, string id)
+        public static GitObject RetrieveObject(this GitRepository repository, string id)
         {
-            return repository.Lookup(new GitObjectId(id));
+            return repository.RetrieveObject(new GitObjectId(id));
         }
 
-        public static GitObject Lookup(this GitRepository repository, byte[] id)
+        public static GitObject RetrieveObject(this GitRepository repository, byte[] id)
         {
-            return repository.Lookup(new GitObjectId(id));
+            return repository.RetrieveObject(new GitObjectId(id));
         }
 
-        public static T Lookup<T>(this GitRepository repository, GitObjectId id)
+        public static T RetrieveObject<T>(this GitRepository repository, GitObjectId id)
             where T : GitObject
         {
-            return (T)repository.Lookup(id);
+            return (T)repository.RetrieveObject(id);
         }
 
-        public static T Lookup<T>(this GitRepository repository, string id)
+        public static T RetrieveObject<T>(this GitRepository repository, string id)
             where T : GitObject
         {
-            return (T)repository.Lookup(id);
+            return (T)repository.RetrieveObject(id);
         }
 
-        public static T Lookup<T>(this GitRepository repository, byte[] id)
+        public static T RetrieveObject<T>(this GitRepository repository, byte[] id)
             where T : GitObject
         {
-            return (T)repository.Lookup(id);
+            return (T)repository.RetrieveObject(id);
         }
     }
 }
