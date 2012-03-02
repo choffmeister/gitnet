@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace GitNet
 {
@@ -44,7 +43,7 @@ namespace GitNet
             int i = 0;
             while (i < rawContent.Length)
             {
-                string line = GetNextLine(rawContent, ref i);
+                string line = GitObject.GetNextLine(rawContent, ref i);
 
                 if (line.StartsWith("tree "))
                 {
@@ -70,21 +69,6 @@ namespace GitNet
             }
 
             _parentIds = parentIds.ToArray();
-        }
-
-        private static string GetNextLine(byte[] rawContent, ref int i)
-        {
-            int start = i;
-
-            while (i < rawContent.Length)
-            {
-                if (rawContent[i++] == 10)
-                {
-                    return GitObject.Encoding.GetString(rawContent, start, i - start - 1);
-                }
-            }
-
-            return GitObject.Encoding.GetString(rawContent, start, rawContent.Length - start);
         }
     }
 }

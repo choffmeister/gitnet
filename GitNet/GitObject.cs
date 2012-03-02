@@ -77,5 +77,37 @@ namespace GitNet
 
             return result;
         }
+
+        protected static int FindNextOccurence(byte[] rawContent, ref int offset, byte b)
+        {
+            int i = 0;
+            while (offset < rawContent.Length)
+            {
+                if (rawContent[offset + i] == b)
+                {
+                    offset += i + 1;
+                    return i;
+                }
+
+                i++;
+            }
+
+            return -1;
+        }
+
+        protected static string GetNextLine(byte[] rawContent, ref int i)
+        {
+            int start = i;
+
+            while (i < rawContent.Length)
+            {
+                if (rawContent[i++] == 10)
+                {
+                    return Encoding.GetString(rawContent, start, i - start - 1);
+                }
+            }
+
+            return Encoding.GetString(rawContent, start, rawContent.Length - start);
+        }
     }
 }
