@@ -1,18 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GitNet.VirtualizedGitFolder;
 
 namespace GitNet
 {
-    public sealed class GitRepository
+    public sealed class GitRepository : IDisposable
     {
         private readonly IGitFolder _gitFolder;
         private readonly Dictionary<GitObjectId, GitObject> _cache;
+
+        private Lazy<GitCommit> _head;
+
+        public GitCommit Head
+        {
+            get { return _head.Value; }
+        }
 
         public GitRepository(IGitFolder gitFolder)
         {
             _gitFolder = gitFolder;
             _cache = new Dictionary<GitObjectId, GitObject>();
+
+            _head = new Lazy<GitCommit>(() => this.Lookup<GitCommit>(this.ResolveReference("ref: HEAD")), true);
         }
 
         public GitObject Lookup(GitObjectId id)
@@ -40,6 +50,11 @@ namespace GitNet
             {
                 return new GitObjectId(reference);
             }
+        }
+
+        public void Dispose()
+        {
+            _gitFolder.Dispose();
         }
     }
 }

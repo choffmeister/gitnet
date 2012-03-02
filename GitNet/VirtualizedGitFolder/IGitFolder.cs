@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace GitNet.VirtualizedGitFolder
 {
-    public interface IGitFolder
+    public interface IGitFolder : IDisposable
     {
         Stream ReadFile(string path);
 

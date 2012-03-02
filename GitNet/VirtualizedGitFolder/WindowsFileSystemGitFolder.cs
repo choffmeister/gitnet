@@ -32,5 +32,9 @@ namespace GitNet.VirtualizedGitFolder
         {
             return Path.Combine(_baseFolder, path.Replace("/", "\\"));
         }
+
+        public void Dispose()
+        {
+        }
     }
 }
