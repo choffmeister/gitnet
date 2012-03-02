@@ -31,12 +31,12 @@ namespace GitNet
             _entries = entries.ToArray();
         }
 
-        private static int FindNextOccurence(byte[] bytes, ref int offset, byte b)
+        private static int FindNextOccurence(byte[] rawContent, ref int offset, byte b)
         {
             int i = 0;
-            while (offset < bytes.Length)
+            while (offset < rawContent.Length)
             {
-                if (bytes[offset + i] == b)
+                if (rawContent[offset + i] == b)
                 {
                     offset += i + 1;
                     return i;
