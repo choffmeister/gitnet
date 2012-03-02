@@ -11,5 +11,9 @@ namespace GitNet.VirtualizedGitFolder
         List<string> ListFiles(string path);
 
         List<string> ListSubdirectories(string path);
+
+        bool FileExists(string path);
+
+        bool DirectoryExists(string path);
     }
 }

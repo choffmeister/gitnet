@@ -33,6 +33,16 @@ namespace GitNet.VirtualizedGitFolder
             return Path.Combine(_baseFolder, path.Replace("/", "\\"));
         }
 
+        public bool FileExists(string path)
+        {
+            return File.Exists(this.ToAbsolutePath(path));
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(this.ToAbsolutePath(path));
+        }
+
         public void Dispose()
         {
         }

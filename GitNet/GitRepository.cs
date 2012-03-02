@@ -54,7 +54,14 @@ namespace GitNet
 
                 if (reference.StartsWith("ref: "))
                 {
-                    newId = this.ResolveReference(_gitFolder.ReadAllLines(reference.Substring(5)).First());
+                    if (_gitFolder.FileExists(reference.Substring(5)))
+                    {
+                        newId = this.ResolveReference(_gitFolder.ReadAllLines(reference.Substring(5)).First());
+                    }
+                    else
+                    {
+                        newId = null;
+                    }
                 }
                 else
                 {

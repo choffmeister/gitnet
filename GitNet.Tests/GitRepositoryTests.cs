@@ -60,6 +60,7 @@ namespace GitNet.Tests
         public void ResolveReferences()
         {
             Assert.AreEqual(new GitObjectId("3ea91f0a360b8288b46d064e5cd4296a26020cfd"), _repo.ResolveReference("ref: HEAD"));
+            Assert.IsNull(_repo.ResolveReference("ref: refs/heads/nonexistentbranch"));
         }
 
         [Test]
