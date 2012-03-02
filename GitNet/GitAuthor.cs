@@ -2,6 +2,7 @@
 
 namespace GitNet
 {
+    [System.Diagnostics.DebuggerDisplay("Name={Name}, MailAddress={MailAddress}")]
     public class GitAuthor
     {
         private readonly string _name;

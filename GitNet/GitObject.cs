@@ -5,6 +5,7 @@ using System.Text;
 
 namespace GitNet
 {
+    [System.Diagnostics.DebuggerDisplay("Id={Id.Sha}")]
     public class GitObject
     {
         private static readonly Encoding _encoding = Encoding.UTF8;

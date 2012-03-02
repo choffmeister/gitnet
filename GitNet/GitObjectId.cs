@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace GitNet
 {
+    [System.Diagnostics.DebuggerDisplay("Sha={Sha}")]
     public sealed class GitObjectId
     {
         private readonly byte[] _raw;
