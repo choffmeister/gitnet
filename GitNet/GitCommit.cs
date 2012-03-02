@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace GitNet
 {
     public sealed class GitCommit : GitObject
     {
-        private static readonly Regex _authorCommitterRegex = new Regex(@"^(?<Name>.+)\s\<(?<MailAddress>.+)\>\s(?<Timestamp>\d+)\s(?<TimeOffset>[+|\-]\d{4})$");
-
         private readonly GitObjectId _treeId;
         private readonly GitObjectId[] _parentIds;
         private readonly GitAuthor _author;
@@ -59,31 +56,11 @@ namespace GitNet
                 }
                 else if (line.StartsWith("author "))
                 {
-                    Match match = _authorCommitterRegex.Match(line.Substring(7));
-
-                    if (match.Success)
-                    {
-                        DateTime authorDate = ConvertUnixTimestampToDateTime(match.Groups["Timestamp"].Value, match.Groups["TimeOffset"].Value);
-                        _author = new GitAuthor(match.Groups["Name"].Value, match.Groups["MailAddress"].Value, authorDate);
-                    }
-                    else
-                    {
-                        throw new Exception("Invalid author line format");
-                    }
+                    _author = new GitAuthor(line.Substring(7));
                 }
                 else if (line.StartsWith("committer "))
                 {
-                    Match match = _authorCommitterRegex.Match(line.Substring(10));
-
-                    if (match.Success)
-                    {
-                        DateTime committerDate = ConvertUnixTimestampToDateTime(match.Groups["Timestamp"].Value, match.Groups["TimeOffset"].Value);
-                        _committer = new GitAuthor(match.Groups["Name"].Value, match.Groups["MailAddress"].Value, committerDate);
-                    }
-                    else
-                    {
-                        throw new Exception("Invalid committer line format");
-                    }
+                    _committer = new GitAuthor(line.Substring(10));
                 }
                 else if (line == "")
                 {
@@ -93,15 +70,6 @@ namespace GitNet
             }
 
             _parentIds = parentIds.ToArray();
-        }
-
-        private static DateTime ConvertUnixTimestampToDateTime(string seconds, string offset)
-        {
-            int offsetInt = Convert.ToInt32(offset);
-
-            return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-                .AddSeconds(long.Parse(seconds))
-                .Add(new TimeSpan(offsetInt / 100, offsetInt % 100, 0));
         }
 
         private static string GetNextLine(byte[] rawContent, ref int i)
