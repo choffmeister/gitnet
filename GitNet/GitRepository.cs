@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GitNet.VirtualizedGitFolder;
 
 namespace GitNet
 {
-    public class GitRepository
+    public sealed class GitRepository
     {
         private readonly IGitFolder _gitFolder;
         private readonly Dictionary<GitObjectId, GitObject> _cache;
@@ -26,6 +27,18 @@ namespace GitNet
                 _cache[id] = go;
 
                 return go;
+            }
+        }
+
+        public GitObjectId ResolveReference(string reference)
+        {
+            if (reference.StartsWith("ref: "))
+            {
+                return this.ResolveReference(_gitFolder.ReadAllLines(reference.Substring(5)).First());
+            }
+            else
+            {
+                return new GitObjectId(reference);
             }
         }
     }

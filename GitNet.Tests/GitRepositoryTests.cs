@@ -51,5 +51,13 @@ namespace GitNet.Tests
 
             Assert.AreEqual(12, count);
         }
+
+        [Test]
+        public void ResolveReferences()
+        {
+            GitRepository repo = new GitRepository(new WindowsFileSystemGitFolder("TestRepository"));
+
+            Assert.AreEqual(new GitObjectId("3ea91f0a360b8288b46d064e5cd4296a26020cfd"), repo.ResolveReference("ref: HEAD"));
+        }
     }
 }
