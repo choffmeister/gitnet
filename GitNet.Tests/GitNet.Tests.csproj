@@ -64,9 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="TestRepository\COMMIT_EDITMSG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="TestRepository\config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -74,9 +71,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestRepository\HEAD">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestRepository\index">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestRepository\info\exclude">
@@ -124,9 +118,10 @@
     <None Include="TestRepository\objects\ff\4541e190688befe09d308a0d07b8baa6c5d767">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestRepository\ORIG_HEAD">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="TestRepository\objects\info\packs" />
+    <None Include="TestRepository\objects\pack\pack-5a1a3055d44407d4087594c9971edcc41a85a7cc.idx" />
+    <None Include="TestRepository\objects\pack\pack-5a1a3055d44407d4087594c9971edcc41a85a7cc.pack" />
+    <None Include="TestRepository\packed-refs" />
     <None Include="TestRepository\refs\heads\master">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -164,8 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestRepository\hooks\" />
-    <Folder Include="TestRepository\objects\info\" />
-    <Folder Include="TestRepository\objects\pack\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
