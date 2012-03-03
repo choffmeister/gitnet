@@ -1,6 +1,6 @@
-﻿using GitNet.VirtualizedGitFolder;
+﻿using System.Linq;
+using GitNet.VirtualizedGitFolder;
 using NUnit.Framework;
-using System.Linq;
 
 namespace GitNet.Tests
 {
@@ -37,6 +37,9 @@ namespace GitNet.Tests
 
             GitObject tag = _repo.RetrieveObject("6402a88dd851421f4a6d6e0baf2b7b0ed17e0048");
             Assert.IsInstanceOf(typeof(GitTag), tag);
+
+            GitObject nonExistent = _repo.RetrieveObject(GitObjectId.Zero);
+            Assert.IsNull(nonExistent);
         }
 
         [Test]
