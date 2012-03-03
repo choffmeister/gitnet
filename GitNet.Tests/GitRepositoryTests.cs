@@ -23,7 +23,7 @@ namespace GitNet.Tests
         }
 
         [Test]
-        public void RetrieveObject()
+        public void RetrieveLooseObjects()
         {
             GitObject commit = _repo.RetrieveObject("3ea91f0a360b8288b46d064e5cd4296a26020cfd");
             Assert.IsInstanceOf(typeof(GitCommit), commit);
@@ -39,7 +39,7 @@ namespace GitNet.Tests
         }
 
         [Test]
-        public void RetrieveAllObjects()
+        public void RetrieveAllLooseObjects()
         {
             int count = 0;
 
@@ -54,6 +54,15 @@ namespace GitNet.Tests
             }
 
             Assert.AreEqual(12, count);
+        }
+
+        [Test]
+        public void RetrievePackedObject()
+        {
+            GitObject commit = _repo.RetrieveObject("2d350445a98ac37a1735e00a3fc546e58d757896");
+
+            Assert.IsNotNull(commit);
+            Assert.IsInstanceOf(typeof(GitCommit), commit);
         }
 
         [Test]

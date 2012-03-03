@@ -35,10 +35,22 @@ namespace GitNet
             }
             else
             {
-                GitObject go = GitObject.CreateFromRaw(id, _gitFolder.ReadFile("objects/" + id.Sha.Substring(0, 2) + "/" + id.Sha.Substring(2)));
-                _objectCache[id] = go;
+                GitObject newObject = null;
 
-                return go;
+                string fileName = "objects/" + id.Sha.Substring(0, 2) + "/" + id.Sha.Substring(2);
+
+                if (_gitFolder.FileExists(fileName))
+                {
+                    newObject = GitObject.CreateFromRaw(id, _gitFolder.ReadFile(fileName));
+                }
+                else
+                {
+                    // TODO: look into packed objects
+                    newObject = null;
+                }
+
+                _objectCache[id] = newObject;
+                return newObject;
             }
         }
 
@@ -60,6 +72,7 @@ namespace GitNet
                     }
                     else
                     {
+                        // TODO: look into packed-refs
                         newId = null;
                     }
                 }
