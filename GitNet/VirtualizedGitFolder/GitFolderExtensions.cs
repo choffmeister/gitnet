@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using GitNet.Binary;
 
 namespace GitNet.VirtualizedGitFolder
 {
@@ -7,7 +8,7 @@ namespace GitNet.VirtualizedGitFolder
     {
         public static string ReadAllText(this IGitFolder gitFolder, string path)
         {
-            using (StreamReader reader = new StreamReader(gitFolder.ReadFile(path), GitObject.Encoding))
+            using (StreamReader reader = new StreamReader(gitFolder.ReadFile(path), GitBinaryHelper.Encoding))
             {
                 return reader.ReadToEnd();
             }

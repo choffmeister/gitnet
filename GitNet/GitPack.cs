@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using GitNet.Binary;
 using GitNet.VirtualizedGitFolder;
 
 namespace GitNet
@@ -115,13 +116,13 @@ namespace GitNet
                 switch (type)
                 {
                     case 1:
-                        return GitObject.CreateFromRaw(id, data.ToStream(), "commit");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "commit");
                     case 2:
-                        return GitObject.CreateFromRaw(id, data.ToStream(), "tree");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "tree");
                     case 3:
-                        return GitObject.CreateFromRaw(id, data.ToStream(), "blob");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "blob");
                     case 4:
-                        return GitObject.CreateFromRaw(id, data.ToStream(), "tag");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "tag");
                     // case 6: OBJ_OFS_DELTA
                     // case 7: OBJ_REF_DELTA
                     default:

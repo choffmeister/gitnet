@@ -10,7 +10,7 @@
         }
 
         public GitBlob(GitObjectId id, byte[] rawContent)
-            : base(id, rawContent)
+            : base(id)
         {
             _content = rawContent;
         }

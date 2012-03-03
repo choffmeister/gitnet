@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GitNet.Binary;
 
 namespace GitNet
 {
@@ -36,14 +37,14 @@ namespace GitNet
         }
 
         public GitCommit(GitObjectId id, byte[] rawContent)
-            : base(id, rawContent)
+            : base(id)
         {
             List<GitObjectId> parentIds = new List<GitObjectId>();
 
             int i = 0;
             while (i < rawContent.Length)
             {
-                string line = GitObject.GetNextLine(rawContent, ref i);
+                string line = GitBinaryHelper.GetNextLine(rawContent, ref i);
 
                 if (line.StartsWith("tree "))
                 {
@@ -63,7 +64,7 @@ namespace GitNet
                 }
                 else if (line == "")
                 {
-                    _message = GitObject.Encoding.GetString(rawContent, i, rawContent.Length - i);
+                    _message = GitBinaryHelper.Encoding.GetString(rawContent, i, rawContent.Length - i);
                     break;
                 }
             }

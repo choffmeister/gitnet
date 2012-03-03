@@ -1,4 +1,6 @@
-﻿namespace GitNet
+﻿using GitNet.Binary;
+
+namespace GitNet
 {
     public sealed class GitTag : GitObject
     {
@@ -9,14 +11,12 @@
         private readonly string _message;
 
         public GitTag(GitObjectId id, byte[] rawContent)
-            : base(id, rawContent)
+            : base(id)
         {
-            var a = GitObject.Encoding.GetString(rawContent);
-
             int i = 0;
             while (i < rawContent.Length)
             {
-                string line = GitObject.GetNextLine(rawContent, ref i);
+                string line = GitBinaryHelper.GetNextLine(rawContent, ref i);
 
                 if (line.StartsWith("object "))
                 {
@@ -36,7 +36,7 @@
                 }
                 else if (line == "")
                 {
-                    _message = GitObject.Encoding.GetString(rawContent, i, rawContent.Length - i);
+                    _message = GitBinaryHelper.Encoding.GetString(rawContent, i, rawContent.Length - i);
                     break;
                 }
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GitNet.Binary;
 using GitNet.VirtualizedGitFolder;
 
 namespace GitNet
@@ -48,7 +49,7 @@ namespace GitNet
 
                 if (_gitFolder.FileExists(fileName))
                 {
-                    newObject = GitObject.CreateFromRaw(id, _gitFolder.ReadFile(fileName));
+                    newObject = GitBinaryHelper.DeserializeHeaderedGitObject(id, _gitFolder.ReadFile(fileName));
                 }
                 else
                 {
