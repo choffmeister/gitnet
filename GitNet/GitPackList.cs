@@ -26,5 +26,21 @@ namespace GitNet
                 _packNames = new string[0];
             }
         }
+
+        public GitObject RetrieveObject(GitObjectId id)
+        {
+            foreach (string packName in _packNames)
+            {
+                GitPack pack = new GitPack(_gitFolder, packName);
+                GitObject go = pack.RetrieveObject(id);
+
+                if (go != null)
+                {
+                    return go;
+                }
+            }
+
+            return null;
+        }
     }
 }

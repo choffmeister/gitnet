@@ -52,8 +52,7 @@ namespace GitNet
                 }
                 else
                 {
-                    // TODO: look into packed objects
-                    newObject = null;
+                    newObject = _packList.Value.RetrieveObject(id);
                 }
 
                 _objectCache[id] = newObject;
