@@ -14,6 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\GitNet\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -76,6 +76,9 @@
     <None Include="TestRepository\info\exclude">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TestRepository\info\refs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestRepository\logs\HEAD">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -118,10 +121,18 @@
     <None Include="TestRepository\objects\ff\4541e190688befe09d308a0d07b8baa6c5d767">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestRepository\objects\info\packs" />
-    <None Include="TestRepository\objects\pack\pack-5a1a3055d44407d4087594c9971edcc41a85a7cc.idx" />
-    <None Include="TestRepository\objects\pack\pack-5a1a3055d44407d4087594c9971edcc41a85a7cc.pack" />
-    <None Include="TestRepository\packed-refs" />
+    <None Include="TestRepository\objects\info\packs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestRepository\objects\pack\pack-5a1a3055d44407d4087594c9971edcc41a85a7cc.idx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestRepository\objects\pack\pack-5a1a3055d44407d4087594c9971edcc41a85a7cc.pack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestRepository\packed-refs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestRepository\refs\heads\master">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
