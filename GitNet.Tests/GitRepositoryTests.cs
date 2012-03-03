@@ -1,5 +1,6 @@
 ﻿using GitNet.VirtualizedGitFolder;
 using NUnit.Framework;
+using System.Linq;
 
 namespace GitNet.Tests
 {
@@ -43,7 +44,7 @@ namespace GitNet.Tests
         {
             int count = 0;
 
-            foreach (var objFolder in _folder.ListSubdirectories("objects"))
+            foreach (var objFolder in _folder.ListSubdirectories("objects").Where(n => n != "objects/info" && n != "objects/pack"))
             {
                 foreach (var objFile in _folder.ListFiles(objFolder))
                 {
@@ -54,6 +55,14 @@ namespace GitNet.Tests
             }
 
             Assert.AreEqual(12, count);
+        }
+
+        [Test]
+        public void PackList()
+        {
+            GitPackList packList = _repo.PackList;
+
+            Assert.AreEqual(new string[] { "pack-5a1a3055d44407d4087594c9971edcc41a85a7cc" }, packList.PackNames);
         }
 
         [Test]

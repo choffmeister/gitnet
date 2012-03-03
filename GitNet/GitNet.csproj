@@ -56,6 +56,8 @@
     <Compile Include="ByteArrayStreamConvertExtensions.cs" />
     <Compile Include="GitAuthor.cs" />
     <Compile Include="GitBlob.cs" />
+    <Compile Include="GitPack.cs" />
+    <Compile Include="GitPackList.cs" />
     <Compile Include="GitTag.cs" />
     <Compile Include="GitCommit.cs" />
     <Compile Include="GitObject.cs" />

@@ -12,10 +12,16 @@ namespace GitNet
         private readonly Dictionary<string, GitObjectId> _referenceCache;
 
         private Lazy<GitCommit> _head;
+        private Lazy<GitPackList> _packList;
 
         public GitCommit Head
         {
             get { return _head.Value; }
+        }
+
+        public GitPackList PackList
+        {
+            get { return _packList.Value; }
         }
 
         public GitRepository(IGitFolder gitFolder)
@@ -25,6 +31,7 @@ namespace GitNet
             _referenceCache = new Dictionary<string, GitObjectId>();
 
             _head = new Lazy<GitCommit>(() => this.RetrieveObject<GitCommit>(this.ResolveReference("ref: HEAD")), true);
+            _packList = new Lazy<GitPackList>(() => new GitPackList(_gitFolder), true);
         }
 
         public GitObject RetrieveObject(GitObjectId id)
