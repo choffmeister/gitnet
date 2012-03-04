@@ -15,6 +15,7 @@ namespace GitNet
 
         private Lazy<GitCommit> _head;
         private Lazy<GitPackList> _packList;
+        private Lazy<GitReference[]> _references;
 
         public GitCommit Head
         {
@@ -26,6 +27,11 @@ namespace GitNet
             get { return _packList.Value; }
         }
 
+        public GitReference[] References
+        {
+            get { return _references.Value; }
+        }
+
         public GitRepository(IGitFolder gitFolder)
         {
             _gitFolder = gitFolder;
@@ -34,6 +40,15 @@ namespace GitNet
 
             _head = new Lazy<GitCommit>(() => this.RetrieveObject<GitCommit>(this.ResolveReference("ref: HEAD")), true);
             _packList = new Lazy<GitPackList>(() => new GitPackList(_gitFolder), true);
+            _references = new Lazy<GitReference[]>(() =>
+            {
+                List<string> referenceNames = _gitFolder.ListFiles("refs", true).ToList();
+
+                if (_gitFolder.FileExists("HEAD"))
+                    referenceNames.Insert(0, "HEAD");
+
+                return referenceNames.Select(n => new GitReference(n, this.ResolveReference("ref: " + n))).ToArray();
+            });
         }
 
         public GitObject RetrieveObject(GitObjectId id)

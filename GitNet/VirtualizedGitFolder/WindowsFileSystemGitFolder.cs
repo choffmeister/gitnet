@@ -18,14 +18,16 @@ namespace GitNet.VirtualizedGitFolder
             return File.OpenRead(this.ToAbsolutePath(path));
         }
 
-        public List<string> ListFiles(string path)
+        public List<string> ListFiles(string path, bool recursive = false)
         {
-            return Directory.EnumerateFiles(this.ToAbsolutePath(path)).Select(n => n.Substring(_baseFolder.Length + 1).Replace("\\", "/")).ToList();
+            return Directory.EnumerateFiles(this.ToAbsolutePath(path), "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
+                .Select(n => n.Substring(_baseFolder.Length + 1).Replace("\\", "/")).ToList();
         }
 
-        public List<string> ListSubdirectories(string path)
+        public List<string> ListSubdirectories(string path, bool recursive = false)
         {
-            return Directory.EnumerateDirectories(this.ToAbsolutePath(path)).Select(n => n.Substring(_baseFolder.Length + 1).Replace("\\", "/")).ToList();
+            return Directory.EnumerateDirectories(this.ToAbsolutePath(path), "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
+                .Select(n => n.Substring(_baseFolder.Length + 1).Replace("\\", "/")).ToList();
         }
 
         private string ToAbsolutePath(string path)

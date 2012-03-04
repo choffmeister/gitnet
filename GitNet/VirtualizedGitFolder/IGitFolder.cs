@@ -8,9 +8,9 @@ namespace GitNet.VirtualizedGitFolder
     {
         Stream ReadFile(string path);
 
-        List<string> ListFiles(string path);
+        List<string> ListFiles(string path, bool recursive = false);
 
-        List<string> ListSubdirectories(string path);
+        List<string> ListSubdirectories(string path, bool recursive = false);
 
         bool FileExists(string path);
 
