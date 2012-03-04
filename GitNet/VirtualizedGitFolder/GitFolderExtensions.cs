@@ -21,7 +21,10 @@ namespace GitNet.VirtualizedGitFolder
 
         public static byte[] ReadAllBytes(this IGitFolder gitFolder, string path)
         {
-            return gitFolder.ReadFile(path).ToByteArray();
+            using (Stream file = gitFolder.ReadFile(path))
+            {
+                return file.ToByteArray();
+            }
         }
     }
 }

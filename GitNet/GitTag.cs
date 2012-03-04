@@ -1,4 +1,5 @@
 ﻿using GitNet.Binary;
+using System.IO;
 
 namespace GitNet
 {
@@ -10,14 +11,14 @@ namespace GitNet
         private readonly GitAuthor _tagger;
         private readonly string _message;
 
-        public GitTag(GitObjectId id, byte[] rawContent)
+        public GitTag(GitObjectId id, Stream raw)
             : base(id)
         {
-            int i = 0;
-            while (i < rawContent.Length)
-            {
-                string line = GitBinaryHelper.GetNextLine(rawContent, ref i);
+            GitBinaryReaderWriter rw = new GitBinaryReaderWriter(raw);
 
+            string line;
+            while ((line = rw.ReadLine()) != null)
+            {
                 if (line.StartsWith("object "))
                 {
                     _objectId = new GitObjectId(line.Substring(7));
@@ -36,7 +37,7 @@ namespace GitNet
                 }
                 else if (line == "")
                 {
-                    _message = GitBinaryHelper.Encoding.GetString(rawContent, i, rawContent.Length - i);
+                    _message = rw.ReadToEnd();
                     break;
                 }
             }

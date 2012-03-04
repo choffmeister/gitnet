@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using GitNet.Binary;
 
 namespace GitNet
@@ -13,20 +13,24 @@ namespace GitNet
             get { return _entries; }
         }
 
-        public GitTree(GitObjectId id, byte[] rawContent)
+        public GitTree(GitObjectId id, Stream raw)
             : base(id)
         {
+            GitBinaryReaderWriter rw = new GitBinaryReaderWriter(raw);
             List<GitTreeEntry> entries = new List<GitTreeEntry>();
 
-            int i = 0;
-            while (i < rawContent.Length)
+            while (true)
             {
-                string entryMode = GitBinaryHelper.Encoding.GetString(rawContent, i, GitBinaryHelper.FindNextOccurence(rawContent, ref i, 32));
-                string entryName = GitBinaryHelper.Encoding.GetString(rawContent, i, GitBinaryHelper.FindNextOccurence(rawContent, ref i, 0));
-                GitObjectId entryId = new GitObjectId(rawContent.Skip(i).Take(20).ToArray());
-                i += 20;
+                string entryMode = rw.ReadSpaceTerminatedString();
+                string entryName = rw.ReadNullTerminatedString();
+                byte[] entryId = rw.ReadBytes(20);
 
-                entries.Add(new GitTreeEntry(entryId, entryName, entryMode));
+                if (entryMode == null || entryName == null || entryId == null)
+                {
+                    break;
+                }
+
+                entries.Add(new GitTreeEntry(new GitObjectId(entryId), entryName, entryMode));
             }
 
             _entries = entries.ToArray();

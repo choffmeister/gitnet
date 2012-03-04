@@ -1,4 +1,6 @@
-﻿namespace GitNet
+﻿using System.IO;
+
+namespace GitNet
 {
     public sealed class GitBlob : GitObject
     {
@@ -9,10 +11,10 @@
             get { return _content; }
         }
 
-        public GitBlob(GitObjectId id, byte[] rawContent)
+        public GitBlob(GitObjectId id, Stream raw)
             : base(id)
         {
-            _content = rawContent;
+            _content = raw.ToByteArray();
         }
     }
 }
