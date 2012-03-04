@@ -87,7 +87,18 @@ namespace GitNet.Tests
         [Test]
         public void Head()
         {
-            var a = _repo.Head;
+            GitCommit head = _repo.Head;
+        }
+
+        [Test]
+        public void References()
+        {
+            GitReference[] references = _repo.References;
+
+            Assert.AreEqual(3, references.Length);
+            Assert.AreEqual("HEAD", references[0].Name);
+            Assert.AreEqual("refs/heads/master", references[1].Name);
+            Assert.AreEqual("refs/tags/foo-tag", references[2].Name);
         }
     }
 }
