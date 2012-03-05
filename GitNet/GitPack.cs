@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using GitNet.Binary;
 using GitNet.VirtualizedGitFolder;
 
@@ -28,131 +26,61 @@ namespace GitNet
         {
             using (Stream index = _gitFolder.ReadFile(_indexFile))
             {
-                byte[] buffer = new byte[8192];
-                index.Read(buffer, 0, 8);
+                GitBinaryReaderWriter rw = new GitBinaryReaderWriter(index);
 
-                // ensure magic number and version
-                if (buffer[0] != 0xff || buffer[1] != 0x74 || buffer[2] != 0x4f || buffer[3] != 0x63)
-                    throw new Exception(string.Format("Expected magic number 0xff744763 in packet index file '{0}'", _indexFile));
-                if (ToInt32(buffer, 4) != 2)
-                    throw new NotSupportedException(string.Format("Version '{0}' index file is not supported", ToInt32(buffer, 4)));
+                int version = rw.ReadPackIndexFileVersion();
+                int[] fanOutTable = rw.ReadInt32List(256);
 
-                // read fan-out table
-                index.Read(buffer, 0, 1024);
-                int totalObjects = ToInt32(buffer, 1020);
-                int remainingToSkip = totalObjects * 20;
-                int indexOfId = -1;
+                int a = id.Raw[0] == 0 ? 0 : fanOutTable[id.Raw[0] - 1];
+                int b = fanOutTable[id.Raw[0]];
 
-                // read maximal 20 shas at once
-                for (int i = 0; i < totalObjects; i += 400)
+                if (a < b)
                 {
-                    int shasToRead = Math.Min(totalObjects - i, 400);
-                    index.Read(buffer, 0, shasToRead * 20);
-                    remainingToSkip -= shasToRead * 20;
+                    index.Seek(a * 20, SeekOrigin.Current);
 
-                    List<GitObjectId> ids = Enumerable.Range(0, shasToRead).Select(n => buffer.Skip(n * 20).Take(20).ToArray()).Select(n => new GitObjectId(n)).ToList();
-
-                    indexOfId = ids.IndexOf(id);
-                    if (indexOfId >= 0)
+                    for (int i = a; i < b; i++)
                     {
-                        indexOfId += i;
-                        index.Seek(remainingToSkip, SeekOrigin.Current);
+                        if (rw.ReadObjectId() == id)
+                        {
+                            index.Seek(i * 4 + fanOutTable[255] * 24 + 1024 + 8, SeekOrigin.Begin);
+                            int offset = rw.ReadInt32();
+                            return this.ExtractObject(id, offset);
+                        }
                     }
-                }
-
-                if (indexOfId >= 0)
-                {
-                    // skip CRC32 table for now
-                    index.Seek(totalObjects * 4, SeekOrigin.Current);
-
-                    // jump to offset value
-                    index.Seek(indexOfId * 4, SeekOrigin.Current);
-
-                    index.Read(buffer, 0, 4);
-                    int offset = ToInt32(buffer, 0);
-                    int nextOffset = -1;
-
-                    if (indexOfId < totalObjects - 1)
-                    {
-                        index.Read(buffer, 0, 4);
-                        nextOffset = ToInt32(buffer, 0);
-                    }
-
-                    return this.ExtractObject(id, offset, nextOffset);
                 }
             }
 
             return null;
         }
 
-        private GitObject ExtractObject(GitObjectId id, int offset, int nextOffset)
+        private GitObject ExtractObject(GitObjectId id, int offset)
         {
             using (Stream pack = _gitFolder.ReadFile(_packFile))
             {
-                byte[] buffer = new byte[8192];
-                pack.Read(buffer, 0, 12);
+                GitBinaryReaderWriter rw = new GitBinaryReaderWriter(pack);
 
-                // ensure magic number and version
-                if (buffer[0] != 0x50 || buffer[1] != 0x41 || buffer[2] != 0x43 || buffer[3] != 0x4b)
-                    throw new Exception(string.Format("Expected magic number 0x5041434b in packet index file '{0}'", _packFile));
-                if (ToInt32(buffer, 4) != 2)
-                    throw new NotSupportedException(string.Format("Version '{0}' index file is not supported", ToInt32(buffer, 4)));
-
-                int totalObjects = ToInt32(buffer, 8);
-
-                pack.Seek(offset - 12, SeekOrigin.Current);
-
-                int i = 0;
-                do pack.Read(buffer, i, 1); while ((buffer[i++] & (byte)128) != 0);
-                int type = (buffer[0] & 112) >> 4;
-                int expandedSize = ToInt4(buffer, 0);
-                for (int j = 1; j < i; j++) expandedSize |= ToInt7(buffer, j) << (4 + (7 * (j - 1)));
-
-                int size = nextOffset > -1 ? nextOffset - offset - i : (int)pack.Length - offset - i - 20;
-
-                byte[] data = new byte[size];
-                pack.Read(data, 0, size);
+                int version = rw.ReadPackFileVersion();
+                int totalObjects = rw.ReadInt32();
+                pack.Seek(offset, SeekOrigin.Begin);
+                int expandedSize;
+                int type = rw.ReadPackFileChunkHeader(out expandedSize);
 
                 switch (type)
                 {
                     case 1:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "commit");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "commit");
                     case 2:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "tree");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "tree");
                     case 3:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "blob");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "blob");
                     case 4:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, data.ToStream(), "tag");
+                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "tag");
                     // case 6: OBJ_OFS_DELTA
                     // case 7: OBJ_REF_DELTA
                     default:
                         throw new NotImplementedException(string.Format("Pack chunk type '{0}' not yet implemented", type));
                 }
             }
-        }
-
-        private static int ToInt4(byte[] bytes, int offset)
-        {
-            int a = bytes[offset] & 15;
-
-            return a;
-        }
-
-        private static int ToInt7(byte[] bytes, int offset)
-        {
-            int a = bytes[offset] & 127;
-
-            return a;
-        }
-
-        private static int ToInt32(byte[] bytes, int offset)
-        {
-            int a = bytes[offset + 3];
-            int b = bytes[offset + 2] << 8;
-            int c = bytes[offset + 1] << 16;
-            int d = bytes[offset + 0] << 24;
-
-            return a | b | c | d;
         }
     }
 }

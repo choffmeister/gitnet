@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -81,6 +82,79 @@ namespace GitNet.Binary
             _stream.Read(buffer, 0, 4);
 
             return buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
+        }
+
+        public int[] ReadInt32List(int count)
+        {
+            byte[] buffer = new byte[count * 4];
+            _stream.Read(buffer, 0, count * 4);
+
+            int[] result = new int[count];
+
+            for (int i = 0; i < count * 4; i += 4)
+            {
+                result[i / 4] = buffer[i + 0] << 24 | buffer[i + 1] << 16 | buffer[i + 2] << 8 | buffer[i + 3];
+            }
+
+            return result;
+        }
+
+        public GitObjectId ReadObjectId()
+        {
+            byte[] buffer = new byte[20];
+            _stream.Read(buffer, 0, 20);
+
+            return new GitObjectId(buffer);
+        }
+
+        public int ReadPackFileChunkHeader(out int expandedSize)
+        {
+            byte b = (byte)_stream.ReadByte();
+            int type = (b & 112) >> 4;
+            expandedSize = b & 15;
+            int j = 0;
+
+            do
+            {
+                b = (byte)_stream.ReadByte();
+                expandedSize |= (b & 127) << (4 + (7 * j++));
+            } while ((b & (byte)128) != 0);
+
+            return type;
+        }
+
+        public int ReadPackFileVersion()
+        {
+            byte[] buffer = new byte[4];
+            _stream.Read(buffer, 0, 4);
+
+            // ensure magic number and version
+            if (buffer[0] != 0x50 || buffer[1] != 0x41 || buffer[2] != 0x43 || buffer[3] != 0x4b)
+                throw new Exception("Expected magic number 0x5041434b in packet index file");
+
+            int version = ReadInt32();
+
+            if (version != 2)
+                throw new NotSupportedException(string.Format("Version '{0}' index file is not supported", version));
+
+            return version;
+        }
+
+        public int ReadPackIndexFileVersion()
+        {
+            byte[] buffer = new byte[4];
+            _stream.Read(buffer, 0, 4);
+
+            // ensure magic number and version
+            if (buffer[0] != 0xff || buffer[1] != 0x74 || buffer[2] != 0x4f || buffer[3] != 0x63)
+                throw new Exception("Expected magic number 0xff744763 in packet index file");
+
+            int version = ReadInt32();
+
+            if (version != 2)
+                throw new NotSupportedException(string.Format("Version '{0}' index file is not supported", version));
+
+            return version;
         }
     }
 }

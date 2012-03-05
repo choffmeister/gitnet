@@ -75,6 +75,8 @@ namespace GitNet.Tests
 
             Assert.IsNotNull(commit);
             Assert.IsInstanceOf(typeof(GitCommit), commit);
+            Assert.AreEqual("choffmeister", ((GitCommit)commit).Author.Name);
+            Assert.AreEqual("fifth\n", ((GitCommit)commit).Message);
         }
 
         [Test]

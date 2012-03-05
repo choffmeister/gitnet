@@ -18,10 +18,8 @@ namespace GitNet.Binary
         {
             Stream deflatedRaw = Deflate(raw);
 
-            // extract header
-            int headerContentBorder = 0;
-            GitBinaryReaderWriter a = new GitBinaryReaderWriter(deflatedRaw);
-            string header = a.ReadNullTerminatedString();
+            GitBinaryReaderWriter rw = new GitBinaryReaderWriter(deflatedRaw);
+            string header = rw.ReadNullTerminatedString();
             string[] headerParts = header.Split(new char[] { ' ' });
 
             string type = headerParts[0];
