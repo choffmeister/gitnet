@@ -59,7 +59,6 @@
     <Compile Include="GitBlob.cs" />
     <Compile Include="GitObjectDatabase.cs" />
     <Compile Include="GitPack.cs" />
-    <Compile Include="GitPackList.cs" />
     <Compile Include="GitReference.cs" />
     <Compile Include="GitReferenceDatabase.cs" />
     <Compile Include="GitTag.cs" />
