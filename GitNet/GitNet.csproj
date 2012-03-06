@@ -53,11 +53,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binary\GitBinaryReaderWriter.cs" />
-    <Compile Include="Binary\GitStreamReader.cs" />
-    <Compile Include="ByteArrayStreamConvertExtensions.cs" />
+    <Compile Include="GitBinaryReaderWriter.cs" />
     <Compile Include="GitAuthor.cs" />
-    <Compile Include="Binary\GitBinaryHelper.cs" />
     <Compile Include="GitBlob.cs" />
     <Compile Include="GitPack.cs" />
     <Compile Include="GitPackList.cs" />

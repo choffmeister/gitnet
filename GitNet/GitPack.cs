@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using GitNet.Binary;
 using GitNet.VirtualizedGitFolder;
 
 namespace GitNet
@@ -68,13 +67,13 @@ namespace GitNet
                 switch (type)
                 {
                     case 1:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "commit");
+                        return rw.ReadUnheaderedGitObject(id, "commit");
                     case 2:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "tree");
+                        return rw.ReadUnheaderedGitObject(id, "tree");
                     case 3:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "blob");
+                        return rw.ReadUnheaderedGitObject(id, "blob");
                     case 4:
-                        return GitBinaryHelper.DeserializeUnheaderedGitObject(id, pack, "tag");
+                        return rw.ReadUnheaderedGitObject(id, "tag");
                     // case 6: OBJ_OFS_DELTA
                     // case 7: OBJ_REF_DELTA
                     default:

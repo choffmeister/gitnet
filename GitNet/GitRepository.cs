@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GitNet.Binary;
 using GitNet.VirtualizedGitFolder;
 
 namespace GitNet
@@ -67,7 +66,9 @@ namespace GitNet
                 {
                     using (Stream file = _gitFolder.ReadFile(fileName))
                     {
-                        newObject = GitBinaryHelper.DeserializeHeaderedGitObject(id, file);
+                        GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
+
+                        newObject = rw.ReadHeaderedGitObject(id);
                     }
                 }
                 else

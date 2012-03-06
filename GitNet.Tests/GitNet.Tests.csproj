@@ -56,7 +56,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ByteArrayStreamConvertExtensionsTests.cs" />
     <Compile Include="GitObjectIdTests.cs" />
     <Compile Include="GitRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

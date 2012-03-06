@@ -14,7 +14,9 @@ namespace GitNet
         public GitBlob(GitObjectId id, Stream raw)
             : base(id)
         {
-            _content = raw.ToByteArray();
+            GitBinaryReaderWriter rw = new GitBinaryReaderWriter(raw);
+
+            _content = rw.ReadBytes();
         }
     }
 }
