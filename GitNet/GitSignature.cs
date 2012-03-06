@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace GitNet
 {
     [System.Diagnostics.DebuggerDisplay("Name={Name}, MailAddress={MailAddress}")]
-    public class GitAuthor
+    public class GitSignature
     {
         private static readonly Regex _regex = new Regex(@"^(?<Name>.+)\s\<(?<MailAddress>.+)\>\s(?<Timestamp>\d+)\s(?<TimeOffset>[+|\-]\d{4})$");
 
@@ -27,14 +27,14 @@ namespace GitNet
             get { return _date; }
         }
 
-        public GitAuthor(string name, string mailAddress, DateTime date)
+        public GitSignature(string name, string mailAddress, DateTime date)
         {
             _name = name;
             _mailAddress = mailAddress;
             _date = date;
         }
 
-        public GitAuthor(string rawString)
+        public GitSignature(string rawString)
         {
             Match match = _regex.Match(rawString);
 
@@ -46,7 +46,7 @@ namespace GitNet
             }
             else
             {
-                throw new Exception("Invalid author raw format");
+                throw new Exception("Invalid signature raw format");
             }
         }
 

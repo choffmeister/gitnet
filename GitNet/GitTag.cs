@@ -7,7 +7,7 @@ namespace GitNet
         private readonly GitObjectId _objectId;
         private readonly string _type;
         private readonly string _tag;
-        private readonly GitAuthor _tagger;
+        private readonly GitSignature _tagger;
         private readonly string _message;
 
         public GitTag(GitObjectId id, Stream raw)
@@ -32,7 +32,7 @@ namespace GitNet
                 }
                 else if (line.StartsWith("tagger "))
                 {
-                    _tagger = new GitAuthor(line.Substring(7));
+                    _tagger = new GitSignature(line.Substring(7));
                 }
                 else if (line == "")
                 {

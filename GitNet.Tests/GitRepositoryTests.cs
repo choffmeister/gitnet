@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using GitNet.VirtualizedGitFolder;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace GitNet.Tests
 {

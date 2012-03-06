@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GitBinaryReaderWriter.cs" />
-    <Compile Include="GitAuthor.cs" />
+    <Compile Include="GitSignature.cs" />
     <Compile Include="GitBlob.cs" />
     <Compile Include="GitObjectDatabase.cs" />
     <Compile Include="GitPack.cs" />

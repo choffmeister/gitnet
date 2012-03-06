@@ -7,8 +7,8 @@ namespace GitNet
     {
         private readonly GitObjectId _treeId;
         private readonly GitObjectId[] _parentIds;
-        private readonly GitAuthor _author;
-        private readonly GitAuthor _committer;
+        private readonly GitSignature _author;
+        private readonly GitSignature _committer;
         private readonly string _message;
 
         public GitObjectId TreeId
@@ -21,12 +21,12 @@ namespace GitNet
             get { return _parentIds; }
         }
 
-        public GitAuthor Author
+        public GitSignature Author
         {
             get { return _author; }
         }
 
-        public GitAuthor Committer
+        public GitSignature Committer
         {
             get { return _committer; }
         }
@@ -55,11 +55,11 @@ namespace GitNet
                 }
                 else if (line.StartsWith("author "))
                 {
-                    _author = new GitAuthor(line.Substring(7));
+                    _author = new GitSignature(line.Substring(7));
                 }
                 else if (line.StartsWith("committer "))
                 {
-                    _committer = new GitAuthor(line.Substring(10));
+                    _committer = new GitSignature(line.Substring(10));
                 }
                 else if (line == "")
                 {
