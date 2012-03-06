@@ -1,4 +1,5 @@
-﻿namespace GitNet
+﻿using System.Collections.Generic;
+namespace GitNet
 {
     public static class GitRepositoryExtensions
     {
@@ -28,6 +29,16 @@
             where T : GitObject
         {
             return (T)repository.RetrieveObject(id);
+        }
+
+        public static IEnumerable<GitCommit> GetCommits(this GitRepository repository)
+        {
+            return repository.GetCommits("ref: refs/heads/master");
+        }
+
+        public static IEnumerable<GitCommit> GetCommits(this GitRepository repository, string reference)
+        {
+            return repository.GetCommits(repository.RetrieveObject<GitCommit>(repository.ResolveReference(reference)));
         }
     }
 }

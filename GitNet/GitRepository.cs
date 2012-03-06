@@ -41,9 +41,9 @@ namespace GitNet
             _referenceDatabase = new Lazy<GitReferenceDatabase>(() => new GitReferenceDatabase(_gitFolder), true);
         }
 
-        public IEnumerable<GitCommit> GetCommits()
+        public IEnumerable<GitCommit> GetCommits(GitCommit commit)
         {
-            return new GitCommitCollection(_objectDatabase.Value, _head.Value);
+            return new GitCommitCollection(_objectDatabase.Value, commit);
         }
 
         public GitObject RetrieveObject(GitObjectId id)
