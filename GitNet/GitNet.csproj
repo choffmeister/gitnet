@@ -53,8 +53,11 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GitRawObjectReferenceDelta.cs" />
     <Compile Include="GitBinaryReaderWriter.cs" />
     <Compile Include="GitCommitCollection.cs" />
+    <Compile Include="GitRawObject.cs" />
+    <Compile Include="GitRawObjectOffsetDelta.cs" />
     <Compile Include="GitSignature.cs" />
     <Compile Include="GitBlob.cs" />
     <Compile Include="GitObjectDatabase.cs" />

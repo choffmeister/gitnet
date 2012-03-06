@@ -13,14 +13,16 @@ namespace GitNet
         const int OBJ_OFS_DELTA = 6;
         const int OBJ_REF_DELTA = 7;
 
+        private readonly GitObjectDatabase _gitObjectDatabase;
         private readonly IGitFolder _gitFolder;
         private readonly string _name;
 
         private readonly string _indexFile;
         private readonly string _packFile;
 
-        public GitPack(IGitFolder gitFolder, string name)
+        public GitPack(GitObjectDatabase gitObjectDatabase, IGitFolder gitFolder, string name)
         {
+            _gitObjectDatabase = gitObjectDatabase;
             _gitFolder = gitFolder;
             _name = name;
 
@@ -28,7 +30,7 @@ namespace GitNet
             _packFile = string.Format("objects/pack/{0}.pack", _name);
         }
 
-        public GitObject RetrieveObject(GitObjectId id)
+        public GitRawObject RetrieveRawObject(GitObjectId id)
         {
             using (Stream index = _gitFolder.ReadFile(_indexFile))
             {
@@ -50,21 +52,7 @@ namespace GitNet
                         {
                             index.Seek(i * 4 + fanOutTable[255] * 24 + 1024 + 8, SeekOrigin.Begin);
                             int offset = rw.ReadInt32();
-                            var result = this.UnpackObject(offset);
-
-                            switch (result.Item2)
-                            {
-                                case OBJ_COMMIT:
-                                    return new GitCommit(id, new MemoryStream(result.Item1));
-                                case OBJ_TREE:
-                                    return new GitTree(id, new MemoryStream(result.Item1));
-                                case OBJ_BLOB:
-                                    return new GitBlob(id, new MemoryStream(result.Item1));
-                                case OBJ_TAG:
-                                    return new GitTag(id, new MemoryStream(result.Item1));
-                                default:
-                                    throw new NotSupportedException();
-                            }
+                            return this.UnpackRawObject(offset);
                         }
                     }
                 }
@@ -73,7 +61,7 @@ namespace GitNet
             return null;
         }
 
-        private Tuple<byte[], int> UnpackObject(int offset)
+        private GitRawObject UnpackRawObject(int offset)
         {
             using (Stream pack = _gitFolder.ReadFile(_packFile))
             {
@@ -88,29 +76,26 @@ namespace GitNet
                 switch (type)
                 {
                     case OBJ_COMMIT:
-                        goto case OBJ_TAG;
+                        return new GitRawObject(GitRawObjectType.Commit, rw.ReadDeflated());
                     case OBJ_TREE:
-                        goto case OBJ_TAG;
+                        return new GitRawObject(GitRawObjectType.Tree, rw.ReadDeflated());
                     case OBJ_BLOB:
-                        goto case OBJ_TAG;
+                        return new GitRawObject(GitRawObjectType.Blob, rw.ReadDeflated());
                     case OBJ_TAG:
-                        return Tuple.Create(rw.ReadDeflated(), type);
+                        return new GitRawObject(GitRawObjectType.Tag, rw.ReadDeflated());
                     case OBJ_OFS_DELTA:
                         {
-                            var delta = rw.ReadObjectDelta();
-                            var origin = this.UnpackObject(offset - delta.Item1);
+                            var delta = rw.ReadObjectOffsetDelta();
+                            var origin = this.UnpackRawObject(offset - delta.Offset);
 
-                            return Tuple.Create(this.ApplyPatch(delta.Item2, origin.Item1), origin.Item2);
+                            return new GitRawObject(origin.Type, this.ApplyPatch(delta.Data, origin.Data));
                         }
                     case OBJ_REF_DELTA:
                         {
-                            GitObjectId originId = rw.ReadObjectId();
-                            var delta = rw.ReadObjectDelta();
+                            var delta = rw.ReadObjectReferenceDelta();
+                            var origin = _gitObjectDatabase.RetrieveRaw(delta.ReferenceId);
 
-                            // TODO: receive origin data and type
-                            throw new NotImplementedException();
-
-                            //return Tuple.Create(this.ApplyPatch(delta.Item2, origin.Item1), origin.Item2);
+                            return new GitRawObject(origin.Type, this.ApplyPatch(delta.Data, origin.Data));
                         }
                     default:
                         throw new NotSupportedException(string.Format("Pack chunk type '{0}' not yet implemented", type));

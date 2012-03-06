@@ -162,7 +162,7 @@ namespace GitNet
             return version;
         }
 
-        public GitObject ReadHeaderedGitObject(GitObjectId id)
+        public GitRawObject ReadHeaderedGitObject(GitObjectId id)
         {
             Stream deflatedRaw = ToDeflatedStream(_stream);
 
@@ -175,15 +175,15 @@ namespace GitNet
 
             switch (type)
             {
-                case "commit": return new GitCommit(id, deflatedRaw);
-                case "tree": return new GitTree(id, deflatedRaw);
-                case "blob": return new GitBlob(id, deflatedRaw);
-                case "tag": return new GitTag(id, deflatedRaw);
+                case "commit": return new GitRawObject(GitRawObjectType.Commit, rw.ReadBytes());
+                case "tree": return new GitRawObject(GitRawObjectType.Tree, rw.ReadBytes());
+                case "blob": return new GitRawObject(GitRawObjectType.Blob, rw.ReadBytes());
+                case "tag": return new GitRawObject(GitRawObjectType.Tag, rw.ReadBytes());
                 default: throw new NotSupportedException(string.Format("Object of type '{0}' is not supported", type));
             }
         }
 
-        public Tuple<int, byte[]> ReadObjectDelta()
+        public GitRawObjectOffsetDelta ReadObjectOffsetDelta()
         {
             int offset = -1;
             byte b;
@@ -198,7 +198,15 @@ namespace GitNet
 
             byte[] delta = this.ReadDeflated();
 
-            return Tuple.Create(offset, delta);
+            return new GitRawObjectOffsetDelta(offset, delta);
+        }
+
+        public GitRawObjectReferenceDelta ReadObjectReferenceDelta()
+        {
+            GitObjectId referenceId = this.ReadObjectId();
+            byte[] delta = this.ReadDeflated();
+
+            return new GitRawObjectReferenceDelta(referenceId, delta);
         }
 
         public int ReadDynamicIntLittleEndian()

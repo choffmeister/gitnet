@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GitNet.VirtualizedGitFolder;
@@ -8,12 +9,14 @@ namespace GitNet
     public class GitObjectDatabase
     {
         private readonly IGitFolder _gitFolder;
+        private readonly Dictionary<GitObjectId, GitRawObject> _rawCache;
         private readonly Dictionary<GitObjectId, GitObject> _cache;
 
         public GitObjectDatabase(IGitFolder gitfolder)
         {
             _gitFolder = gitfolder;
 
+            _rawCache = new Dictionary<GitObjectId, GitRawObject>();
             _cache = new Dictionary<GitObjectId, GitObject>();
         }
 
@@ -25,13 +28,27 @@ namespace GitNet
             }
             else
             {
-                GitObject newObject = this.RetrieveUncached(id);
+                GitObject newObject = this.ParseRaw(id, this.RetrieveRaw(id));
                 _cache[id] = newObject;
                 return newObject;
             }
         }
 
-        private GitObject RetrieveUncached(GitObjectId id)
+        public GitRawObject RetrieveRaw(GitObjectId id)
+        {
+            if (_rawCache.ContainsKey(id))
+            {
+                return _rawCache[id];
+            }
+            else
+            {
+                GitRawObject newRawObject = this.RetrieveRawUncached(id);
+                _rawCache[id] = newRawObject;
+                return newRawObject;
+            }
+        }
+
+        private GitRawObject RetrieveRawUncached(GitObjectId id)
         {
             string fileName = "objects/" + id.Sha.Substring(0, 2) + "/" + id.Sha.Substring(2);
 
@@ -62,10 +79,10 @@ namespace GitNet
                                 string packName = line.Substring(2, line.Length - 7);
                                 parsedPackFiles.Add(packName);
 
-                                GitPack pack = new GitPack(_gitFolder, packName);
-                                GitObject go = pack.RetrieveObject(id);
+                                GitPack pack = new GitPack(this, _gitFolder, packName);
+                                GitRawObject gro = pack.RetrieveRawObject(id);
 
-                                if (go != null) return go;
+                                if (gro != null) return gro;
                             }
                         }
                     }
@@ -73,10 +90,32 @@ namespace GitNet
 
                 foreach (string packName in _gitFolder.ListFiles("objects/pack").Where(n => n.EndsWith(".pack")).Select(n => n.Substring(13, n.Length - 18)).Except(parsedPackFiles))
                 {
-                    GitPack pack = new GitPack(_gitFolder, packName);
-                    GitObject go = pack.RetrieveObject(id);
+                    GitPack pack = new GitPack(this, _gitFolder, packName);
+                    GitRawObject gro = pack.RetrieveRawObject(id);
 
-                    if (go != null) return go;
+                    if (gro != null) return gro;
+                }
+            }
+
+            return null;
+        }
+
+        private GitObject ParseRaw(GitObjectId id, GitRawObject raw)
+        {
+            if (raw != null)
+            {
+                switch (raw.Type)
+                {
+                    case GitRawObjectType.Commit:
+                        return new GitCommit(id, new MemoryStream(raw.Data));
+                    case GitRawObjectType.Tree:
+                        return new GitTree(id, new MemoryStream(raw.Data));
+                    case GitRawObjectType.Blob:
+                        return new GitBlob(id, new MemoryStream(raw.Data));
+                    case GitRawObjectType.Tag:
+                        return new GitTag(id, new MemoryStream(raw.Data));
+                    default:
+                        throw new NotSupportedException();
                 }
             }
 
