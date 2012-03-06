@@ -25,6 +25,7 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
+*.nupkg
 
 packages/*
 !packages/repositories.config
