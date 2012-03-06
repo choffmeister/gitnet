@@ -70,7 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VirtualizedGitFolder\IGitFolder.cs" />
     <Compile Include="VirtualizedGitFolder\GitFolderExtensions.cs" />
-    <Compile Include="VirtualizedGitFolder\WindowsFileSystemGitFolder.cs" />
+    <Compile Include="VirtualizedGitFolder\FileSystemGitFolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

@@ -13,7 +13,7 @@ namespace GitNet.Tests
         [TestFixtureSetUp]
         public void SetUp()
         {
-            _folder = new WindowsFileSystemGitFolder("TestRepository");
+            _folder = new FileSystemGitFolder("TestRepository");
             _repo = new GitRepository(_folder);
         }
 
