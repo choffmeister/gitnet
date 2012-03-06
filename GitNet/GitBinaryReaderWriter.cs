@@ -51,28 +51,7 @@ namespace GitNet
 
         public byte[] ReadBytes()
         {
-            List<Tuple<byte[], int>> buffers = new List<Tuple<byte[], int>>();
-
-            int acutallyRead = -1;
-            while (acutallyRead != 0)
-            {
-                byte[] buffer = new byte[4096];
-                acutallyRead = _stream.Read(buffer, 0, 4096);
-                buffers.Add(Tuple.Create(buffer, acutallyRead));
-            }
-
-            int i = 0;
-            int j = 0;
-            byte[] byteArray = new byte[buffers.Sum(n => n.Item2)];
-
-            while (i < buffers.Count)
-            {
-                Array.Copy(buffers[i].Item1, 0, byteArray, j, buffers[i].Item2);
-                j += buffers[i].Item2;
-                i += 1;
-            }
-
-            return byteArray;
+            return ToByteArray(_stream);
         }
 
         public string ReadLine()
@@ -144,14 +123,7 @@ namespace GitNet
         {
             byte b = (byte)_stream.ReadByte();
             int type = (b & 112) >> 4;
-            expandedSize = b & 15;
-            int j = 0;
-
-            do
-            {
-                b = (byte)_stream.ReadByte();
-                expandedSize |= (b & 127) << (4 + (7 * j++));
-            } while ((b & (byte)128) != 0);
+            expandedSize = b & 15 + this.ReadDynamicIntLittleEndian() << 4;
 
             return type;
         }
@@ -192,7 +164,7 @@ namespace GitNet
 
         public GitObject ReadHeaderedGitObject(GitObjectId id)
         {
-            Stream deflatedRaw = this.Deflate(_stream);
+            Stream deflatedRaw = ToDeflatedStream(_stream);
 
             GitBinaryReaderWriter rw = new GitBinaryReaderWriter(deflatedRaw);
             string header = rw.ReadNullTerminatedString();
@@ -211,21 +183,60 @@ namespace GitNet
             }
         }
 
-        public GitObject ReadUnheaderedGitObject(GitObjectId id, string type)
+        public Tuple<int, byte[]> ReadObjectDelta()
         {
-            Stream data = this.Deflate(_stream);
+            int offset = -1;
+            byte b;
 
-            switch (type)
+            do
             {
-                case "commit": return new GitCommit(id, data);
-                case "tree": return new GitTree(id, data);
-                case "blob": return new GitBlob(id, data);
-                case "tag": return new GitTag(id, data);
-                default: throw new NotSupportedException(string.Format("Object of type '{0}' is not supported", type));
+                offset++;
+                b = (byte)_stream.ReadByte();
+                offset = (offset << 7) + (b & 127);
             }
+            while ((b & (byte)128) != 0);
+
+            byte[] delta = this.ReadDeflated();
+
+            return Tuple.Create(offset, delta);
         }
 
-        private Stream Deflate(Stream raw)
+        public int ReadDynamicIntLittleEndian()
+        {
+            int result = 0;
+            int j = 0;
+            byte b;
+
+            do
+            {
+                b = (byte)_stream.ReadByte();
+                result |= (b & 127) << (7 * j++);
+            } while ((b & (byte)128) != 0);
+
+            return result;
+        }
+
+        public int ReadDynamicIntBigEndian()
+        {
+            int result = 0;
+            int j = 0;
+            byte b;
+
+            do
+            {
+                b = (byte)_stream.ReadByte();
+                result = (result << (7 * j++)) | (b & 127);
+            } while ((b & (byte)128) != 0);
+
+            return result;
+        }
+
+        public byte[] ReadDeflated()
+        {
+            return ToByteArray(ToDeflatedStream(_stream));
+        }
+
+        private static Stream ToDeflatedStream(Stream raw)
         {
             // check for zlib header
             byte[] zlibHeader = new byte[2];
@@ -236,6 +247,32 @@ namespace GitNet
             }
 
             return new DeflateStream(raw, CompressionMode.Decompress);
+        }
+
+        private static byte[] ToByteArray(Stream raw)
+        {
+            List<Tuple<byte[], int>> buffers = new List<Tuple<byte[], int>>();
+
+            int acutallyRead = -1;
+            while (acutallyRead != 0)
+            {
+                byte[] buffer = new byte[4096];
+                acutallyRead = raw.Read(buffer, 0, 4096);
+                buffers.Add(Tuple.Create(buffer, acutallyRead));
+            }
+
+            int i = 0;
+            int j = 0;
+            byte[] byteArray = new byte[buffers.Sum(n => n.Item2)];
+
+            while (i < buffers.Count)
+            {
+                Array.Copy(buffers[i].Item1, 0, byteArray, j, buffers[i].Item2);
+                j += buffers[i].Item2;
+                i += 1;
+            }
+
+            return byteArray;
         }
     }
 }

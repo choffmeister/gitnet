@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using GitNet.VirtualizedGitFolder;
 
 namespace GitNet
@@ -43,23 +44,39 @@ namespace GitNet
                     return rw.ReadHeaderedGitObject(id);
                 }
             }
-            else if (_gitFolder.FileExists("objects/info/packs"))
+            else
             {
-                using (Stream file = _gitFolder.ReadFile("objects/info/packs"))
+                List<string> parsedPackFiles = new List<string>();
+
+                if (_gitFolder.FileExists("objects/info/packs"))
                 {
-                    GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
-
-                    string line;
-                    while ((line = rw.ReadLine()) != null)
+                    using (Stream file = _gitFolder.ReadFile("objects/info/packs"))
                     {
-                        if (line.Length >= 2 && line.StartsWith("P "))
-                        {
-                            GitPack pack = new GitPack(_gitFolder, line.Substring(2, line.Length - 7));
-                            GitObject go = pack.RetrieveObject(id);
+                        GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
 
-                            if (go != null) return go;
+                        string line;
+                        while ((line = rw.ReadLine()) != null)
+                        {
+                            if (line.Length >= 2 && line.StartsWith("P "))
+                            {
+                                string packName = line.Substring(2, line.Length - 7);
+                                parsedPackFiles.Add(packName);
+
+                                GitPack pack = new GitPack(_gitFolder, packName);
+                                GitObject go = pack.RetrieveObject(id);
+
+                                if (go != null) return go;
+                            }
                         }
                     }
+                }
+
+                foreach (string packName in _gitFolder.ListFiles("objects/pack").Where(n => n.EndsWith(".pack")).Select(n => n.Substring(13, n.Length - 18)).Except(parsedPackFiles))
+                {
+                    GitPack pack = new GitPack(_gitFolder, packName);
+                    GitObject go = pack.RetrieveObject(id);
+
+                    if (go != null) return go;
                 }
             }
 

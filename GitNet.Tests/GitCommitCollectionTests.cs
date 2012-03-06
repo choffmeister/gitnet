@@ -8,26 +8,12 @@ namespace GitNet.Tests
     [TestFixture]
     public class GitCommitCollectionTests
     {
-        private GitRepository _repo;
-        private IGitFolder _folder;
-
-        [TestFixtureSetUp]
-        public void SetUp()
-        {
-            _folder = new FileSystemGitFolder("TestRepository2");
-            _repo = new GitRepository(_folder);
-        }
-
-        [TestFixtureTearDown]
-        public void TearDown()
-        {
-            _repo.Dispose();
-        }
-
         [Test]
-        public void Test()
+        public void Test1()
         {
-            List<GitCommit> commits = new GitCommitCollection(_repo.ObjectDatabase, _repo.Head).ToList();
+            IGitFolder folder = new FileSystemGitFolder("TestRepository2");
+            GitRepository repo = new GitRepository(folder);
+            List<GitCommit> commits = new GitCommitCollection(repo.ObjectDatabase, repo.Head).ToList();
 
             Assert.AreEqual(39, commits.Count);
 
@@ -46,6 +32,14 @@ namespace GitNet.Tests
             Assert.AreEqual("b5198b9", commits[12].Id.Sha.Substring(0, 7));
             Assert.AreEqual("c5958cd", commits[13].Id.Sha.Substring(0, 7));
             Assert.AreEqual("c7ac193", commits[14].Id.Sha.Substring(0, 7));
+        }
+
+        [Test]
+        public void Test2()
+        {
+            IGitFolder folder = new FileSystemGitFolder("TestRepository3");
+            GitRepository repo = new GitRepository(folder);
+            List<GitCommit> commits = new GitCommitCollection(repo.ObjectDatabase, repo.Head).ToList();
         }
     }
 }
