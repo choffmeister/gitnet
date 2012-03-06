@@ -64,7 +64,7 @@ namespace GitNet
 
         public static bool operator !=(GitObjectId goi1, GitObjectId goi2)
         {
-            return !goi1.Equals(goi2);
+            return !(goi1 == goi2);
         }
 
         public override bool Equals(object obj)
