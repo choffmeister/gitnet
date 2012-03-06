@@ -134,9 +134,6 @@
     <None Include="TestRepository\refs\heads\master">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestRepository\refs\tags\foo-tag">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitNet\GitNet.csproj">
@@ -168,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestRepository\hooks\" />
+    <Folder Include="TestRepository\refs\tags\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

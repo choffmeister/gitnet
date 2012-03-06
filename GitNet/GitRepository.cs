@@ -46,6 +46,28 @@ namespace GitNet
                 if (_gitFolder.FileExists("HEAD"))
                     referenceNames.Insert(0, "HEAD");
 
+                if (_gitFolder.FileExists("packed-refs"))
+                {
+                    using (Stream file = _gitFolder.ReadFile("packed-refs"))
+                    {
+                        GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
+
+                        string line;
+                        while ((line = rw.ReadLine()) != null)
+                        {
+                            if (line.Length > 0 && line.First() != '^' && line.First() != '#')
+                            {
+                                string referenceName = line.Substring(41);
+
+                                if (!referenceNames.Contains(referenceName))
+                                {
+                                    referenceNames.Add(referenceName);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 return referenceNames.Select(n => new GitReference(n, this.ResolveReference("ref: " + n))).ToArray();
             });
         }
@@ -97,9 +119,24 @@ namespace GitNet
                     {
                         newId = this.ResolveReference(_gitFolder.ReadAllLines(reference.Substring(5)).First());
                     }
+                    else if (_gitFolder.FileExists("packed-refs"))
+                    {
+                        using (Stream file = _gitFolder.ReadFile("packed-refs"))
+                        {
+                            GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
+
+                            string line;
+                            while ((line = rw.ReadLine()) != null)
+                            {
+                                if (line.Length > 0 && line.First() != '^' && line.First() != '#' && line.EndsWith(reference.Substring(4)))
+                                {
+                                    return new GitObjectId(line.Substring(0, 40));
+                                }
+                            }
+                        }
+                    }
                     else
                     {
-                        // TODO: look into packed-refs
                         newId = null;
                     }
                 }
