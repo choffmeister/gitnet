@@ -56,6 +56,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GitCommitCollectionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GitObjectIdTests.cs" />
     <Compile Include="GitRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
