@@ -28,6 +28,8 @@ namespace GitNet.Tests
         {
             GitObject commit = _repo.RetrieveObject("3ea91f0a360b8288b46d064e5cd4296a26020cfd");
             Assert.IsInstanceOf(typeof(GitCommit), commit);
+            Assert.AreEqual("Test User", ((GitCommit)commit).Committer.Name);
+            Assert.AreEqual("test.user@invalid.domain.tld", ((GitCommit)commit).Committer.MailAddress);
 
             GitObject tree = _repo.RetrieveObject("2f22b42434938c3dc11695064ecf0c04add85711");
             Assert.IsInstanceOf(typeof(GitTree), tree);
