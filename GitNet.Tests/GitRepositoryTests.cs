@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using GitNet.VirtualizedGitFolder;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace GitNet.Tests
 {
@@ -63,14 +64,6 @@ namespace GitNet.Tests
         }
 
         [Test]
-        public void PackList()
-        {
-            GitPackList packList = _repo.PackList;
-
-            Assert.AreEqual(new string[] { "pack-5a1a3055d44407d4087594c9971edcc41a85a7cc" }, packList.PackNames);
-        }
-
-        [Test]
         public void RetrievePackedObject()
         {
             GitObject commit = _repo.RetrieveObject("2d350445a98ac37a1735e00a3fc546e58d757896");
@@ -97,9 +90,9 @@ namespace GitNet.Tests
         [Test]
         public void References()
         {
-            GitReference[] references = _repo.References;
+            List<GitReference> references = _repo.References;
 
-            Assert.AreEqual(3, references.Length);
+            Assert.AreEqual(3, references.Count);
             Assert.AreEqual("HEAD", references[0].Name);
             Assert.AreEqual("refs/heads/master", references[1].Name);
             Assert.AreEqual("refs/tags/foo-tag", references[2].Name);

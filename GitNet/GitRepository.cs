@@ -9,145 +9,48 @@ namespace GitNet
     public sealed class GitRepository : IDisposable
     {
         private readonly IGitFolder _gitFolder;
-        private readonly Dictionary<GitObjectId, GitObject> _objectCache;
-        private readonly Dictionary<string, GitObjectId> _referenceCache;
 
         private Lazy<GitCommit> _head;
-        private Lazy<GitPackList> _packList;
-        private Lazy<GitReference[]> _references;
+        private Lazy<GitObjectDatabase> _objectDatabase;
+        private Lazy<GitReferenceDatabase> _referenceDatabase;
 
         public GitCommit Head
         {
             get { return _head.Value; }
         }
 
-        public GitPackList PackList
+        public GitObjectDatabase ObjectDatabase
         {
-            get { return _packList.Value; }
+            get { return _objectDatabase.Value; }
         }
 
-        public GitReference[] References
+        public GitReferenceDatabase ReferenceDatabase
         {
-            get { return _references.Value; }
+            get { return _referenceDatabase.Value; }
+        }
+
+        public List<GitReference> References
+        {
+            get { return _referenceDatabase.Value.List(); }
         }
 
         public GitRepository(IGitFolder gitFolder)
         {
             _gitFolder = gitFolder;
-            _objectCache = new Dictionary<GitObjectId, GitObject>();
-            _referenceCache = new Dictionary<string, GitObjectId>();
 
             _head = new Lazy<GitCommit>(() => this.RetrieveObject<GitCommit>(this.ResolveReference("ref: HEAD")), true);
-            _packList = new Lazy<GitPackList>(() => new GitPackList(_gitFolder), true);
-            _references = new Lazy<GitReference[]>(() =>
-            {
-                List<string> referenceNames = _gitFolder.ListFiles("refs", true).ToList();
-
-                if (_gitFolder.FileExists("HEAD"))
-                    referenceNames.Insert(0, "HEAD");
-
-                if (_gitFolder.FileExists("packed-refs"))
-                {
-                    using (Stream file = _gitFolder.ReadFile("packed-refs"))
-                    {
-                        GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
-
-                        string line;
-                        while ((line = rw.ReadLine()) != null)
-                        {
-                            if (line.Length > 0 && line.First() != '^' && line.First() != '#')
-                            {
-                                string referenceName = line.Substring(41);
-
-                                if (!referenceNames.Contains(referenceName))
-                                {
-                                    referenceNames.Add(referenceName);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return referenceNames.Select(n => new GitReference(n, this.ResolveReference("ref: " + n))).ToArray();
-            });
+            _objectDatabase = new Lazy<GitObjectDatabase>(() => new GitObjectDatabase(_gitFolder), true);
+            _referenceDatabase = new Lazy<GitReferenceDatabase>(() => new GitReferenceDatabase(_gitFolder), true);
         }
 
         public GitObject RetrieveObject(GitObjectId id)
         {
-            if (_objectCache.ContainsKey(id))
-            {
-                return _objectCache[id];
-            }
-            else
-            {
-                GitObject newObject = null;
-
-                string fileName = "objects/" + id.Sha.Substring(0, 2) + "/" + id.Sha.Substring(2);
-
-                if (_gitFolder.FileExists(fileName))
-                {
-                    using (Stream file = _gitFolder.ReadFile(fileName))
-                    {
-                        GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
-
-                        newObject = rw.ReadHeaderedGitObject(id);
-                    }
-                }
-                else
-                {
-                    newObject = _packList.Value.RetrieveObject(id);
-                }
-
-                _objectCache[id] = newObject;
-                return newObject;
-            }
+            return _objectDatabase.Value.Retrieve(id);
         }
 
         public GitObjectId ResolveReference(string reference)
         {
-            if (_referenceCache.ContainsKey(reference))
-            {
-                return _referenceCache[reference];
-            }
-            else
-            {
-                GitObjectId newId = null;
-
-                if (reference.StartsWith("ref: "))
-                {
-                    if (_gitFolder.FileExists(reference.Substring(5)))
-                    {
-                        newId = this.ResolveReference(_gitFolder.ReadAllLines(reference.Substring(5)).First());
-                    }
-                    else if (_gitFolder.FileExists("packed-refs"))
-                    {
-                        using (Stream file = _gitFolder.ReadFile("packed-refs"))
-                        {
-                            GitBinaryReaderWriter rw = new GitBinaryReaderWriter(file);
-
-                            string line;
-                            while ((line = rw.ReadLine()) != null)
-                            {
-                                if (line.Length > 0 && line.First() != '^' && line.First() != '#' && line.EndsWith(reference.Substring(4)))
-                                {
-                                    return new GitObjectId(line.Substring(0, 40));
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        newId = null;
-                    }
-                }
-                else
-                {
-                    newId = new GitObjectId(reference);
-                }
-
-                _referenceCache[reference] = newId;
-                return newId;
-            }
+            return _referenceDatabase.Value.Resolve(reference);
         }
 
         public void Dispose()
