@@ -99,7 +99,8 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)TestRepository" "$(TargetDir)TestRepository" /S /I /D
-xcopy "$(ProjectDir)TestRepository2" "$(TargetDir)TestRepository2" /S /I /D</PostBuildEvent>
+xcopy "$(ProjectDir)TestRepository2" "$(TargetDir)TestRepository2" /S /I /D
+xcopy "$(ProjectDir)TestRepository3" "$(TargetDir)TestRepository3" /S /I /D</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
