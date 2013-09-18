@@ -1,6 +1,0 @@
-0000000000000000000000000000000000000000 d491dd2b869b77eb470d0ec4f1e8d509a9a411b5 choffmeister <thekwasti@googlemail.com> 1329689074 +0100	clone: from git@bitbucket.org:choffmeister/anysync.git
-d491dd2b869b77eb470d0ec4f1e8d509a9a411b5 049d1107db44fb5ac338cfc9ac2c5722d599aad9 choffmeister <thekwasti@googlemail.com> 1329689457 +0100	commit: fixed CRLF
-049d1107db44fb5ac338cfc9ac2c5722d599aad9 03fa0c40b0cd425f98855f763306ed910b3f9ac1 choffmeister <thekwasti@googlemail.com> 1329753374 +0100	commit: code cleanup
-03fa0c40b0cd425f98855f763306ed910b3f9ac1 9047248f3c9e2f3d7d025d142cc45bfbcab8fdfc choffmeister <thekwasti@googlemail.com> 1329753389 +0100	commit: refactored classes representing changes
-9047248f3c9e2f3d7d025d142cc45bfbcab8fdfc 4328f239f6c59faf3d2becb22d5014e76c067c4d choffmeister <thekwasti@googlemail.com> 1329754327 +0100	commit (amend): refactored classes representing changes
-4328f239f6c59faf3d2becb22d5014e76c067c4d 5f60ca41fa67f12a43855602f15bdaf40f3cc4fa choffmeister <thekwasti@googlemail.com> 1329755743 +0100	commit: added some conflict resolve strategies

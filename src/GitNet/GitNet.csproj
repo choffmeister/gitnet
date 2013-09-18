@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{21452B1A-3D6A-4D0D-B8FA-C5C98D10A930}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>GitNet</RootNamespace>
+    <AssemblyName>GitNet</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GitBinaryReaderWriter.cs" />
+    <Compile Include="GitBlob.cs" />
+    <Compile Include="GitCommit.cs" />
+    <Compile Include="GitCommitCollection.cs" />
+    <Compile Include="GitObject.cs" />
+    <Compile Include="GitObjectDatabase.cs" />
+    <Compile Include="GitObjectId.cs" />
+    <Compile Include="GitPack.cs" />
+    <Compile Include="GitRawObject.cs" />
+    <Compile Include="GitRawObjectOffsetDelta.cs" />
+    <Compile Include="GitRawObjectReferenceDelta.cs" />
+    <Compile Include="GitReference.cs" />
+    <Compile Include="GitReferenceDatabase.cs" />
+    <Compile Include="GitRepository.cs" />
+    <Compile Include="GitRepositoryExtensions.cs" />
+    <Compile Include="GitSignature.cs" />
+    <Compile Include="GitTag.cs" />
+    <Compile Include="GitTree.cs" />
+    <Compile Include="GitTreeEntry.cs" />
+    <Compile Include="FileSystemGitFolder.cs" />
+    <Compile Include="GitFolderExtensions.cs" />
+    <Compile Include="IGitFolder.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

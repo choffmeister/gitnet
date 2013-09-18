@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNet", "GitNet\GitNet.csproj", "{21452B1A-3D6A-4D0D-B8FA-C5C98D10A930}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNet.Tests", "GitNet.Tests\GitNet.Tests.csproj", "{0B17D322-AF7A-4193-A0D0-1E03251AC2EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B17D322-AF7A-4193-A0D0-1E03251AC2EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B17D322-AF7A-4193-A0D0-1E03251AC2EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B17D322-AF7A-4193-A0D0-1E03251AC2EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B17D322-AF7A-4193-A0D0-1E03251AC2EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21452B1A-3D6A-4D0D-B8FA-C5C98D10A930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21452B1A-3D6A-4D0D-B8FA-C5C98D10A930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21452B1A-3D6A-4D0D-B8FA-C5C98D10A930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21452B1A-3D6A-4D0D-B8FA-C5C98D10A930}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = GitNet\GitNet.csproj
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$1.ResourceNamePolicy = FileFormatDefault
+	EndGlobalSection
+EndGlobal
