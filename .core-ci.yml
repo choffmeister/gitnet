@@ -1,0 +1,5 @@
+machine: precise64-mono
+
+script: |
+  cd choffmeister/gitnet && ./tools/dependencies.py
+  cd choffmeister/gitnet && ./tools/tests.sh
